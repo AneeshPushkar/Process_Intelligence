@@ -2,7 +2,20 @@ function resolveApiBaseUrl() {
   let raw = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
   raw = raw.trim()
   if (raw && !raw.startsWith('http://') && !raw.startsWith('https://')) {
+    if (!raw.includes('.') && !raw.includes('localhost')) {
+      raw = `${raw}.onrender.com`
+    }
     raw = `https://${raw}`
+  } else if (raw.startsWith('https://') || raw.startsWith('http://')) {
+    try {
+      const u = new URL(raw)
+      if (!u.hostname.includes('.') && u.hostname !== 'localhost') {
+        u.hostname = `${u.hostname}.onrender.com`
+        raw = u.toString()
+      }
+    } catch {
+      // ignore URL parse errors
+    }
   }
   const trimmed = raw.replace(/\/+$/, '')
   return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`
