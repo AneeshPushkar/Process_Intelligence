@@ -35,7 +35,6 @@ services:
   - type: web
     name: processiq-frontend
     runtime: static
-    plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     routes:
